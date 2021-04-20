@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace TowTruckUberAPI.Models.Dtos
 {
-    public record ResponseDto
+    public class Response
     {
         public string Status { get; init; }
         public string Message { get; init; }
