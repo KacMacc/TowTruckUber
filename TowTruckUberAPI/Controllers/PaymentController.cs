@@ -17,7 +17,7 @@ namespace TowTruckUberAPI.Controllers
     public class PaymentController : ControllerBase
     {
         [HttpPost]
-        [Route("/{paymentId}")]
+        [Route("{paymentId}")]
         public IActionResult CreatePayment([FromRoute][Required] int paymentId, [FromBody] PaymentDto paymentDto)
         {
             throw new NotImplementedException();
@@ -25,7 +25,7 @@ namespace TowTruckUberAPI.Controllers
         
 
         [HttpGet]
-        [Route("/{paymentId}")]
+        [Route("{paymentId}")]
         public IActionResult GetPaymentById([FromRoute][Required] int paymentId)
         {
             throw new NotImplementedException();

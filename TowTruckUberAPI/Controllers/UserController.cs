@@ -11,12 +11,15 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Newtonsoft.Json;
 using TowTruckUberAPI.Models;
 using TowTruckUberAPI.Models.Dtos;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace TowTruckUberAPI.Controllers
 {
-    [Route("user")]
+    [Route("[controller]")]
     [ApiController]
     [Authorize]
     public class UserController : ControllerBase
@@ -30,9 +33,28 @@ namespace TowTruckUberAPI.Controllers
             _configuration = configuration;
         }
 
+
+        //[AllowAnonymous]
+        //[HttpGet]
+        //[Route("login")]
+        //public  string Login()
+        //{
+        //    MapGrid mapGrid = new MapGrid()
+        //    {
+        //        Id = 3,
+        //        Latitude = "3535.353",
+        //        Longitude = "-493.434"
+        //    };
+
+        //    string jsonString = System.Text.Json.JsonSerializer.Serialize(mapGrid);
+
+        //    return jsonString;
+        //}
+
+
         [AllowAnonymous]
         [HttpPost]
-        [Route("/login")]
+        [Route("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
         {
             var user = await _userManager.FindByNameAsync(loginDto.Email);
@@ -72,7 +94,7 @@ namespace TowTruckUberAPI.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        [Route("/register")]
+        [Route("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
         {
             var userExists = await _userManager.FindByNameAsync(registerDto.Email);
@@ -98,14 +120,14 @@ namespace TowTruckUberAPI.Controllers
         }
 
         [HttpDelete]
-        [Route("/{email}")]
+        [Route("{email}")]
         public IActionResult DeleteUser([FromRoute][Required] string email)
         {
             throw new NotImplementedException();
         }
 
         [HttpGet]
-        [Route("/{email}")]
+        [Route("{email}")]
         public IActionResult GetUserByEmail([FromRoute][Required] string email)
         {
             throw new NotImplementedException();
@@ -113,7 +135,7 @@ namespace TowTruckUberAPI.Controllers
 
        
         [HttpPut]
-        [Route("/{email}")]
+        [Route("{email}")]
         
         public  IActionResult UpdateUser([FromRoute][Required] string email, [FromBody] User body)
         {

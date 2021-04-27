@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TowTruckUberAPI.Models;
 
 namespace TowTruckUberAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210427195241_User_repair")]
+    partial class User_repair
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -171,7 +173,7 @@ namespace TowTruckUberAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("MapGridId")
+                    b.Property<int>("MapGridId")
                         .HasColumnType("int");
 
                     b.Property<string>("Street")
@@ -429,7 +431,9 @@ namespace TowTruckUberAPI.Migrations
                 {
                     b.HasOne("TowTruckUberAPI.Models.MapGrid", "MapGrid")
                         .WithMany("Addresses")
-                        .HasForeignKey("MapGridId");
+                        .HasForeignKey("MapGridId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("MapGrid");
                 });

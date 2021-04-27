@@ -16,7 +16,6 @@ namespace TowTruckUberAPI.Models
         public string FlatNum { get; set; }
 
         public MapGrid MapGrid { get; set; }
-        public int MapGridId { get; set; }
 
     }
 }

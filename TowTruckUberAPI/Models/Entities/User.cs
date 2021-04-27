@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Identity;
 
 namespace TowTruckUberAPI.Models
 {
+    [Table("AspNetUsers")]
     public class User : IdentityUser
     {
         public int Id { get; set; }

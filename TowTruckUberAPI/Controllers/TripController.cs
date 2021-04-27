@@ -16,21 +16,21 @@ namespace TowTruckUberAPI.Controllers
     public class TripController : ControllerBase
     {
         [HttpGet]
-        [Route("/generateTrips/{email}")]
+        [Route("generateTrips/{email}")]
         public IActionResult GenerateTripByEmail([FromRoute][Required] string email)
         {
             throw new NotImplementedException();
         }
 
         [HttpGet]
-        [Route("/userTrip/{email}")]
+        [Route("userTrip/{email}")]
         public IActionResult GetTripByEmail([FromRoute][Required] string email)
         {
             throw new NotImplementedException();
         }
 
         [HttpGet]
-        [Route("/{tripId}")]
+        [Route("{tripId}")]
         public IActionResult GetTripById([FromRoute][Required] int tripId)
         {
             throw new NotImplementedException();
@@ -43,7 +43,7 @@ namespace TowTruckUberAPI.Controllers
         }
 
         [HttpPut]
-        [Route("/{tripId}")]
+        [Route("{tripId}")]
         public IActionResult PutTripById([FromRoute][Required] int tripId, [FromBody] string status)
         {
             throw new NotImplementedException();
