@@ -5,36 +5,40 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using TowTruckUberAPI.Models;
 using TowTruckUberAPI.Models.Dtos;
 
 namespace TowTruckUberAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("user")]
     [ApiController]
+    [Authorize]
     public class UserController : ControllerBase
     {
-        private readonly UserManager<User> userManager;
+        private readonly UserManager<User> _userManager;
         private readonly IConfiguration _configuration;
 
         public UserController(UserManager<User> userManager, IConfiguration configuration)
         {
-            this.userManager = userManager;
+            this._userManager = userManager;
             _configuration = configuration;
         }
 
+        [AllowAnonymous]
         [HttpPost]
-        [Route("login")]
+        [Route("/login")]
         public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
         {
-            var user = await userManager.FindByNameAsync(loginDto.Email);
-            if (user != null && await userManager.CheckPasswordAsync(user, loginDto.Password))
+            var user = await _userManager.FindByNameAsync(loginDto.Email);
+            if (user != null && await _userManager.CheckPasswordAsync(user, loginDto.Password))
             {
-                var userRoles = await userManager.GetRolesAsync(user);
+                var userRoles = await _userManager.GetRolesAsync(user);
 
                 var authClaims = new List<Claim>
                 {
@@ -66,12 +70,12 @@ namespace TowTruckUberAPI.Controllers
             return Unauthorized();
         }
 
-
+        [AllowAnonymous]
         [HttpPost]
-        [Route("register")]
+        [Route("/register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
         {
-            var userExists = await userManager.FindByNameAsync(registerDto.Email);
+            var userExists = await _userManager.FindByNameAsync(registerDto.Email);
 
             if (userExists != null)
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User with this e-mail already exists!" });
@@ -85,12 +89,35 @@ namespace TowTruckUberAPI.Controllers
                 SecurityStamp = Guid.NewGuid().ToString(),
             };
 
-            var result = await userManager.CreateAsync(user, registerDto.Password);
+            var result = await _userManager.CreateAsync(user, registerDto.Password);
 
             if (!result.Succeeded)
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });
 
             return Ok(new Response { Status = "Success", Message = "User created successfully!" });
+        }
+
+        [HttpDelete]
+        [Route("/{email}")]
+        public IActionResult DeleteUser([FromRoute][Required] string email)
+        {
+            throw new NotImplementedException();
+        }
+
+        [HttpGet]
+        [Route("/{email}")]
+        public IActionResult GetUserByEmail([FromRoute][Required] string email)
+        {
+            throw new NotImplementedException();
+        }
+
+       
+        [HttpPut]
+        [Route("/{email}")]
+        
+        public  IActionResult UpdateUser([FromRoute][Required] string email, [FromBody] User body)
+        {
+            throw new NotImplementedException();
         }
 
     }
