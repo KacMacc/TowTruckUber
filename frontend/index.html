@@ -66,12 +66,12 @@
                                 <div id="formContent">
                               
                                     <!-- Login Form -->
-                                    <form class="my-3">
+                                    <form class="my-3" id="loginForm" >
                                         <div class="row">
-                                            <input class = "col-6 offset-3 my-2 text-center" type="text" id="email" name="login" placeholder="email">
+                                            <input class = "col-6 offset-3 my-2 text-center" type="email" id="email" name="login" placeholder="email" required>
                                         </div>
                                         <div class="row">
-                                            <input class = "col-6 offset-3 my-2 text-center" type="password" id="password" name="login" placeholder="password">
+                                            <input class = "col-6 offset-3 my-2 text-center" type="password" id="password" name="login" placeholder="password" required>
                                         </div>
                                         <div class="row">
                                             <input class = "col-6 offset-3 my-2 text-center" type="submit" value="Log In">
@@ -109,5 +109,49 @@
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
+
+    <script>
+        // Example starter JavaScript for disabling form submissions if there are invalid fields
+        (function() {
+          'use strict';
+            window.addEventListener('load', function() {
+                // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                var form = document.getElementById("loginForm");
+
+                form.addEventListener('submit', function(event) {
+                    var email = form[0].value;
+                    var password = form[1].value;
+                    
+                    loginUser("https://localhost:44313/user/login", 
+                        {
+                            email: email,
+                            password: password
+                        }
+                    ).then(data => console.log(data));
+                    event.preventDefault();
+                    event.stopPropagation();
+                    
+                }, false);
+            }, false);
+        })();
+
+        async function loginUser(url = '', data = {}) {
+        // Default options are marked with *
+        let response = await fetch(url,
+        {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+              // 'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: JSON.stringify(data)
+        });
+
+        return await response.json();
+        }
+
+
+        
+    </script>
 </body>
 </html>
