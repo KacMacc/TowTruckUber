@@ -16,6 +16,8 @@ using TowTruckUberAPI.Models;
 using TowTruckUberAPI.Models.Dtos;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Cors;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace TowTruckUberAPI.Controllers
 {
@@ -34,22 +36,22 @@ namespace TowTruckUberAPI.Controllers
         }
 
 
-        //[AllowAnonymous]
-        //[HttpGet]
-        //[Route("login")]
-        //public  string Login()
-        //{
-        //    MapGrid mapGrid = new MapGrid()
-        //    {
-        //        Id = 3,
-        //        Latitude = "3535.353",
-        //        Longitude = "-493.434"
-        //    };
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("login")]
+        public string Login()
+        {
+            MapGrid mapGrid = new MapGrid()
+            {
+                Id = 3,
+                Latitude = "3535.353",
+                Longitude = "-493.434"
+            };
 
-        //    string jsonString = System.Text.Json.JsonSerializer.Serialize(mapGrid);
+            string jsonString = JsonSerializer.Serialize(mapGrid);
 
-        //    return jsonString;
-        //}
+            return jsonString;
+        }
 
 
         [AllowAnonymous]
@@ -92,6 +94,7 @@ namespace TowTruckUberAPI.Controllers
             return Unauthorized();
         }
 
+
         [AllowAnonymous]
         [HttpPost]
         [Route("register")]
@@ -108,38 +111,68 @@ namespace TowTruckUberAPI.Controllers
                 Surname = registerDto.Surname,
                 PhoneNumber = registerDto.PhoneNumber,
                 Email = registerDto.Email,
+                UserName = $"{registerDto.Name}{registerDto.Surname}",
                 SecurityStamp = Guid.NewGuid().ToString(),
             };
+
 
             var result = await _userManager.CreateAsync(user, registerDto.Password);
 
             if (!result.Succeeded)
-                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = $"User creation failed! Please check user details and try again." });
 
             return Ok(new Response { Status = "Success", Message = "User created successfully!" });
         }
 
         [HttpDelete]
         [Route("{email}")]
-        public IActionResult DeleteUser([FromRoute][Required] string email)
+        public async Task<IActionResult> DeleteUser([FromRoute][Required] string email)
         {
-            throw new NotImplementedException();
+            var userExists = await _userManager.FindByEmailAsync(email);
+
+            if (userExists != null)
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User with this e-mail already exists!" });
+
+            var result = await _userManager.DeleteAsync(userExists);
+
+            if (!result.Succeeded)
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User deleting failed! Please check user details and try again." });
+
+            return Ok(new Response { Status = "Success", Message = "User deleted successfully!" });
         }
 
         [HttpGet]
         [Route("{email}")]
-        public IActionResult GetUserByEmail([FromRoute][Required] string email)
+        public async Task<IActionResult> GetUserByEmail([FromRoute][Required] string email)
         {
-            throw new NotImplementedException();
+            var userExists = await _userManager.FindByEmailAsync(email);
+
+            if (userExists != null)
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "Can't find user with that email." });
+
+            var result = JsonSerializer.Serialize(userExists);
+
+            return Ok(result);
         }
 
-       
+
         [HttpPut]
         [Route("{email}")]
-        
-        public  IActionResult UpdateUser([FromRoute][Required] string email, [FromBody] User body)
+        public async Task<IActionResult> UpdateUser([FromRoute][Required] string email, [FromBody] User body)
         {
-            throw new NotImplementedException();
+            var userExists = await _userManager.FindByEmailAsync(email);
+
+            if (userExists != null)
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "Can't find user with that email." });
+
+            userExists.Name = body.Name ?? userExists.Name;
+            userExists.Surname = body.Surname ?? userExists.Surname; ;
+            userExists.PhoneNumber = body.PhoneNumber ?? userExists.PhoneNumber; ;
+            userExists.Email = body.Email ?? userExists.Email; ;
+            userExists.UserName = $"{body.Name}{body.Surname}";
+
+
+            return Ok(new Response { Status = "Success", Message = "User deleted successfully!" });
         }
 
     }

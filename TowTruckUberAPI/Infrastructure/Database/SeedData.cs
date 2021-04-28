@@ -11,8 +11,6 @@ namespace TowTruckUberAPI.Infrastructure.Database
 {
     public class SeedData
     {
-
-
         public static void Seed(IApplicationBuilder app)
         {
             using (var serviceScope = app.ApplicationServices.CreateScope())
@@ -63,69 +61,70 @@ namespace TowTruckUberAPI.Infrastructure.Database
                         context.SaveChanges();
                     }
 
-                    //if (!context.Users.Any())
-                    //{
+                    if (!context.Users.Any())
+                    {
 
-                    //    context.Users.AddRange(new User()
-                    //    {
-                    //        Name = "Zdzisław",
-                    //        Surname = "Kręcina",
-                    //        PhoneNumber = "403918329",
-                    //        Email = "zdzislaw@example.com",
-                    //        IsContractor = false,
-                    //    },
-                    //        new User()
-                    //        {
-                    //            Name = "Michał",
-                    //            Surname = "Anioł",
-                    //            PhoneNumber = "997998999",
-                    //            Email = "michal@example.com",
-                    //            IsContractor = true,
-                    //        },
-                    //        new User()
-                    //        {
-                    //            Name = "123",
-                    //            Surname = "456",
-                    //            PhoneNumber = "506508510",
-                    //            Email = "123@example.com",
-                    //            IsContractor = true,
-                    //        });
-                    //    context.SaveChanges();
-                    //}
+                        context.Users.AddRange(new User()
+                        {
+                            Name = "Zdzisław",
+                            Surname = "Kręcina",
+                            PhoneNumber = "403918329",
+                            Email = "zdzislaw@example.com",
+                            IsContractor = false,
+                        },
+                            new User()
+                            {
+                                Name = "Michał",
+                                Surname = "Anioł",
+                                PhoneNumber = "997998999",
+                                Email = "michal@example.com",
+                                IsContractor = true,
+                            },
+                            new User()
+                            {
+                                Name = "123",
+                                Surname = "456",
+                                PhoneNumber = "506508510",
+                                Email = "123@example.com",
+                                IsContractor = true,
+                            });
+                        context.SaveChanges();
+                    }
 
-                    //if (!context.Trips.Any())
-                    //{
+                    if (!context.Trips.Any())
+                    {
 
-                    //    context.Trips.AddRange(
-                    //        new Trip()
-                    //        {
-                    //            Contractor = context.Users.Find(1),
-                    //            Customer = context.Users.Find(2),
-                    //            CreatedAt = DateTime.Now,
-                    //            Distance = 40,
-                    //            EndLocation = context.Addresses.Find(1),
-                    //            EstimatedTime = DateTime.Now,
-                    //            StartLocation = context.Addresses.Find(2),
+                        context.Trips.AddRange(
+                            new Trip()
+                            {
+                                Contractor = context.Users.Find("11033803-99ab-4718-94be-4ef26c0979d3"),
+                                Customer = context.Users.Find("8d172353-4cda-4a81-85cf-e0b8544751c3"),
+                                CreatedAt = DateTime.Now,
+                                Distance = 40,
+                                EndLocation = context.Addresses.Find(1),
+                                EstimatedTime = DateTime.Now,
+                                StartLocation = context.Addresses.Find(2),
+                                Price = 10.99
 
-                    //        });
-                    //    context.SaveChanges();
-                    //}
+                            });
+                        context.SaveChanges();
+                    }
 
-                    //if (!context.Payments.Any())
-                    //{
+                    if (!context.Payments.Any())
+                    {
 
-                    //    context.Payments.AddRange(new Payment()
-                    //    {
-                    //        Description = "test",
-                    //        Name = "payment test",
-                    //        Payer = context.Users.Find(1),
-                    //        StartDate = "111",
-                    //        State = StateEnum.Pending,
-                    //        Plan = 3,
+                        context.Payments.AddRange(new Payment()
+                        {
+                            Description = "test",
+                            Name = "payment test",
+                            Payer = context.Users.FirstOrDefault(),
+                            StartDate = "111",
+                            State = StateEnum.Pending,
+                            Plan = 3,
 
-                    //    });
-                    //    context.SaveChanges();
-                    //}
+                        });
+                        context.SaveChanges();
+                    }
                 }
             }
         }

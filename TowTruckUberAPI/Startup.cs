@@ -16,6 +16,7 @@ namespace TowTruckUberAPI
 {
     public class Startup
     {
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -31,12 +32,15 @@ namespace TowTruckUberAPI
 
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("AppDbContext")));
-          
+
 
             // For Identity  
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
+
+            // CORS
+            services.AddCors(options => options.AddDefaultPolicy(builder => builder.AllowAnyOrigin()));
 
             // Adding Authentication  
             services.AddAuthentication(options =>
@@ -61,6 +65,19 @@ namespace TowTruckUberAPI
                 };
             });
 
+            //services.AddCors(options =>
+            //{
+            //    options.AddPolicy(name: MyAllowSpecificOrigins,
+            //        builder =>
+            //        {
+            //            builder.WithOrigins("https://localhost:5001",
+            //                "https://localhost:5000");
+            //        });
+            //});
+
+            
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -84,13 +101,21 @@ namespace TowTruckUberAPI
 
             app.UseRouting();
 
-            app.UseAuthentication();
+            app.UseCors(builder =>
+                builder
+                    .AllowAnyOrigin()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod());
+
             app.UseAuthorization();
-            
+            //app.UseAuthentication();
+            //app.UsweMvc();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
+
+            
         }
     }
 }

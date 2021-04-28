@@ -10,8 +10,8 @@ using TowTruckUberAPI.Models;
 namespace TowTruckUberAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20210427195736_User_repair2")]
-    partial class User_repair2
+    [Migration("20210427213447_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -311,7 +311,6 @@ namespace TowTruckUberAPI.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
@@ -343,7 +342,6 @@ namespace TowTruckUberAPI.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("PhoneNumberConfirmed")
