@@ -116,9 +116,15 @@ namespace TowTruckUberAPI.Controllers
 
 
             var result = await _userManager.CreateAsync(user, registerDto.Password);
+            string registerErrors = "";
+
+            foreach(var error in result.Errors)
+            {
+                registerErrors += result.Errors +"\n"
+            }
 
 
-            return !result.Succeeded ? StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = $"User creation failed! Please check user details and try again." })
+            return !result.Succeeded ? StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = registerErrors })
                 : Ok(new Response { Status = "Success", Message = "User created successfully!" });
         }
 
