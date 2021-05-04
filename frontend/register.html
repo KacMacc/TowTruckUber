@@ -68,7 +68,7 @@
                                     <!-- Register Form -->
                                     <form class="my-3" id = "myForm">
                                         <div class="row">
-                                            <div id="error-message" class="text-danger col-10 offset-1"></div>
+                                            <div id="error-message" class="text-danger col-12"></div>
                                         </div>
                                         <div class=" form-row">
                                             <input class = "col-6 offset-3 my-2 text-center" type="text" id="name" name="register" placeholder="Name" required>
@@ -155,9 +155,9 @@
             Password2=document.getElementById("password2").value;
         
             //check if password meets the requirements
-            if(Password1.length<5)
+            if(Password1.length<6)
             {
-                document.getElementById("password1-error-message").innerHTML = "Password must be at least 5 characters";
+                document.getElementById("password1-error-message").innerHTML = "Password must be at least 6 characters";
                 Error=true;
             }
             else

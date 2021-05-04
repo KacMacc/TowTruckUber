@@ -108,7 +108,7 @@ namespace TowTruckUberAPI
                     .AllowAnyMethod());
 
             app.UseAuthorization();
-            //app.UseAuthentication();
+            app.UseAuthentication();
             //app.UsweMvc();
             app.UseEndpoints(endpoints =>
             {
