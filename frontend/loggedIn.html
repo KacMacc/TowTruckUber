@@ -15,12 +15,8 @@
     <link rel="stylesheet" href="css/fontello.css">
     <link href="https://fonts.googleapis.com/css?family=Josefin+Sans:400,700|Nunito:400,700&display=swap&subset=latin-ext" rel="stylesheet">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1"> <!-- Ensures optimal rendering on mobile devices. -->
-
 </head>
 <body>
-    <script src="https://www.paypal.com/sdk/js?client-id=ARTVnvqd245cr_RpkHknUbadyU6-27yh-8PLdY-7lgWIHvpYn0mqqQW6L0fDGPKL8XsiWG_-ovAqcC-D"> // Replace YOUR_CLIENT_ID with your sandbox client ID
-    </script>
     <header>
         <nav class="navbar bg-info navbar-dark navbar-expand-md fixed-top">
             <div class="row container-fluid">
@@ -33,11 +29,8 @@
                     
                     <ul class="navbar-nav m-auto">
 
-                        <li class="nav-item active">
-                            <a class="nav-link" href="index.html">Start</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="register.html">Register</a>
+                        <li class="nav-item active" onclick=logoutFunction()>
+                            <a class="nav-link">Logout</a>
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">Menu</a>
@@ -64,38 +57,18 @@
     </header>
     <main>
             <div class="container" id="mainbox">
-                <div class="row">
-                    <div class="col-md-12 content p-3 my-3">
-                        <div class="wrapper fadeInDown">
-                            <div id="formContent">
-                                
-                                <!-- Login Form -->
-                                <form class="my-3" id="loginForm" >
-                                    <div class="row">
-                                        <div id="error-message" class="text-danger col-12"></div>
-                                    </div>
-                                    <div class="row">
-                                        <input class = "col-6 offset-3 my-2 text-center" type="email" id="email" name="login" placeholder="email" required>
-                                    </div>
-                                    <div class="row">
-                                        <input class = "col-6 offset-3 my-2 text-center" type="password" id="password" name="login" placeholder="password" required>
-                                    </div>
-                                    <div class="row">
-                                        <input class = "col-6 offset-3 my-2 text-center" type="submit" value="Log In">
-                                    </div>
-                                </form>
-                          
-                                <!-- Remind Passowrd -->
-                                <div id="formFooter">
-                                  <a class="underlineHover" href="#">Forgot Password?</a>
-                                </div>                              
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 <div class = "row">
-                    <div class="col-md-12 content p-3 my-3 text-center">
-                        <div id="paypal-button-container">
+                    <div class="col-md-12 content p-3 my-3 wrapper fadeInDown">
+                        <div class = "whiteBackground py-3">
+                            <div class = "row text-center">
+                                <div class = "col-12 py-3">Welcome username! <br> PLACEHOLDER
+                                </div>
+                            </div>
+                            <div class = "row">
+                                <div class = "col-12 py-3">
+                                    <a href = "#"><input type = "button" value="Nothing"></a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -124,30 +97,18 @@
     <script src="js/bootstrap.min.js"></script>
 
     <script>
-        function handleServerAnswer(data) {
-            console.log(data);
-            switch(data.title)
-            {
-                case "Success":
-                    jQuery(window).load(function() {
-                    sessionStorage.setItem('status','loggedIn') 
-                    });
-                    window.location.replace('loggedIn.html');
-                    break;
-                case "Unauthorized":
-                    sessionStorage.setItem('status','loggedIn') 
-                    document.getElementById("error-message").innerHTML = "Wrong email or password!";
-                    break;
-                default:
-                    document.getElementById("error-message").innerHTML = "Something is no yes!";
-                    console.log("Server returned wrong code!");
-            }
-        }
-    </script>
-
-    <script>
+        function logoutFunction() {
+            sessionStorage.clear();
+            window.location.replace('index.html');
+        };
+        window.onload = function() {
+            if (sessionStorage.getItem('status') == null){
+                    window.location.replace('index.html');
+                }
+        };
         // Example starter JavaScript for disabling form submissions if there are invalid fields
-        (function() {
+
+        /*(function() {
           'use strict';
             window.addEventListener('load', function() {
                 // Fetch all the forms we want to apply custom Bootstrap validation styles to
@@ -183,28 +144,7 @@
         });
 
         return response.json();
-        }
-
-
-        paypal.Buttons({
-        createOrder: function(data, actions) {
-          return actions.order.create({
-            purchase_units: [{
-              amount: {
-                value: '0.01'
-              }
-            }]
-          });
-        },
-        onApprove: function(data, actions) {
-          return actions.order.capture().then(function(details) {
-            alert('Transaction completed by ' + details.payer.name.given_name);
-          });
-        }
-      }).render('#paypal-button-container'); // Display payment options on your web 
-
-
-        
+        }*/
     </script>
 </body>
 </html>
