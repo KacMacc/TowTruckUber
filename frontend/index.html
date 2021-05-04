@@ -129,9 +129,13 @@
             switch(data.title)
             {
                 case "Success":
+                    jQuery(window).load(function() {
+                    sessionStorage.setItem('status','loggedIn') 
+                    });
                     window.location.replace('loggedIn.html');
                     break;
                 case "Unauthorized":
+                    sessionStorage.setItem('status','loggedIn') 
                     document.getElementById("error-message").innerHTML = "Wrong email or password!";
                     break;
                 default:

@@ -29,8 +29,8 @@
                     
                     <ul class="navbar-nav m-auto">
 
-                        <li class="nav-item active">
-                            <a class="nav-link" href="index.html">Logout</a>
+                        <li class="nav-item active" onclick=logoutFunction()>
+                            <a class="nav-link">Logout</a>
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">Menu</a>
@@ -97,8 +97,18 @@
     <script src="js/bootstrap.min.js"></script>
 
     <script>
+        function logoutFunction() {
+            sessionStorage.clear();
+            window.location.replace('index.html');
+        };
+        window.onload = function() {
+            if (sessionStorage.getItem('status') == null){
+                    window.location.replace('index.html');
+                }
+        };
         // Example starter JavaScript for disabling form submissions if there are invalid fields
-        (function() {
+
+        /*(function() {
           'use strict';
             window.addEventListener('load', function() {
                 // Fetch all the forms we want to apply custom Bootstrap validation styles to
@@ -134,7 +144,7 @@
         });
 
         return response.json();
-        }    
+        }*/
     </script>
 </body>
 </html>
