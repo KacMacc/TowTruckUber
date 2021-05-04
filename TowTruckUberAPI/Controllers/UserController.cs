@@ -120,7 +120,7 @@ namespace TowTruckUberAPI.Controllers
 
             foreach(var error in result.Errors)
             {
-                registerErrors += result.Errors +"\n"
+                registerErrors += error.Code + " " + error.Description + "\n";
             }
 
 
