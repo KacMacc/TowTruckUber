@@ -15,6 +15,15 @@ namespace TowTruckUberAPI.Services
 {
     public class UserService
     {
+        private readonly UserManager<User> _userManager;
+        private readonly IConfiguration _configuration;
+
+        public UserService(UserManager<User> userManager, IConfiguration configuration)
+        {
+            _userManager = userManager;
+            _configuration = configuration;
+        }
+
 
     }
 }
