@@ -48,9 +48,7 @@ namespace TowTruckUberAPI.Controllers
                 Longitude = "-493.434"
             };
 
-            string jsonString = JsonSerializer.Serialize(mapGrid);
-
-            return jsonString;
+            return JsonSerializer.Serialize(mapGrid); ;
         }
 
 
@@ -91,6 +89,7 @@ namespace TowTruckUberAPI.Controllers
                     expiration = token.ValidTo
                 });
             }
+
             return Unauthorized();
         }
 
@@ -102,7 +101,7 @@ namespace TowTruckUberAPI.Controllers
         {
             var userExists = await _userManager.FindByNameAsync(registerDto.Email);
 
-            if (userExists != null)
+            if (userExists is not null)
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User with this e-mail already exists!" });
 
             User user = new User()
@@ -117,11 +116,16 @@ namespace TowTruckUberAPI.Controllers
 
 
             var result = await _userManager.CreateAsync(user, registerDto.Password);
+            string registerErrors = "";
 
-            if (!result.Succeeded)
-                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = $"User creation failed! Please check user details and try again." });
+            foreach(var error in result.Errors)
+            {
+                registerErrors += $"{error.Code}. {error.Description} \n";
+            }
 
-            return Ok(new Response { Status = "Success", Message = "User created successfully!" });
+
+            return !result.Succeeded ? StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = registerErrors })
+                : Ok(new Response { Status = "Success", Message = "User created successfully!" });
         }
 
         [HttpDelete]
@@ -130,15 +134,13 @@ namespace TowTruckUberAPI.Controllers
         {
             var userExists = await _userManager.FindByEmailAsync(email);
 
-            if (userExists != null)
+            if (userExists is null)
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User with this e-mail already exists!" });
 
             var result = await _userManager.DeleteAsync(userExists);
 
-            if (!result.Succeeded)
-                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User deleting failed! Please check user details and try again." });
-
-            return Ok(new Response { Status = "Success", Message = "User deleted successfully!" });
+            return !result.Succeeded ? StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User deleting failed! Please check user details and try again." })
+                : Ok(new Response { Status = "Success", Message = "User deleted successfully!" });
         }
 
         [HttpGet]
@@ -147,12 +149,10 @@ namespace TowTruckUberAPI.Controllers
         {
             var userExists = await _userManager.FindByEmailAsync(email);
 
-            if (userExists != null)
+            if (userExists is null)
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "Can't find user with that email." });
 
-            var result = JsonSerializer.Serialize(userExists);
-
-            return Ok(result);
+            return Ok(JsonSerializer.Serialize(userExists));
         }
 
 
@@ -162,7 +162,7 @@ namespace TowTruckUberAPI.Controllers
         {
             var userExists = await _userManager.FindByEmailAsync(email);
 
-            if (userExists != null)
+            if (userExists is null)
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "Can't find user with that email." });
 
             userExists.Name = body.Name ?? userExists.Name;
@@ -170,7 +170,6 @@ namespace TowTruckUberAPI.Controllers
             userExists.PhoneNumber = body.PhoneNumber ?? userExists.PhoneNumber; ;
             userExists.Email = body.Email ?? userExists.Email; ;
             userExists.UserName = $"{body.Name}{body.Surname}";
-
 
             return Ok(new Response { Status = "Success", Message = "User deleted successfully!" });
         }

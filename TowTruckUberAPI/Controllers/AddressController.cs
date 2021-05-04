@@ -4,7 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using TowTruckUberAPI.Models;
 using TowTruckUberAPI.Models.Dtos;
 
 namespace TowTruckUberAPI.Controllers
@@ -15,28 +19,45 @@ namespace TowTruckUberAPI.Controllers
     {
         public class AddressApiController : ControllerBase
         {
+            private readonly AppDbContext _dbContext;
+
+            public AddressApiController(AppDbContext dbContext)
+            {
+                _dbContext = dbContext;
+            }
+
 
             [HttpPost]
             [Route("{addressId}")]
-            public IActionResult CreateAddress(AddressDto addressDto)
+            public async Task<IActionResult> CreateAddress(AddressDto addressDto)
             {
-                throw new NotImplementedException();
-            }
+                Address address = new Address()
+                {
+                    City = addressDto.City,
+                    Country = addressDto.Country,
+                    FlatNum = addressDto.FlatNum,
+                    HouseNum = addressDto.FlatNum,
+                    Street = addressDto.Street,
+                    ZipCode = addressDto.ZipCode,
+                };
 
+                await _dbContext.Addresses.AddAsync(address);
+                await _dbContext.SaveChangesAsync();
 
-            [HttpGet]
-            [Route("userAddress/{email}")]
-            public IActionResult GetAddressByEmail([FromRoute][Required] string email)
-            {
-                throw new NotImplementedException();
+                return Ok(new Response { Status = "Success", Message = "Address created successfully." });
             }
 
 
             [HttpGet]
             [Route("{addressId}")]
-            public IActionResult GetAddressById([FromRoute][Required] int addressId)
+            public async Task<IActionResult> GetAddressById([FromRoute][Required] int addressId)
             {
-                throw new NotImplementedException();
+                Address addressExists = await _dbContext.Addresses.FindAsync(addressId);
+
+                if (addressExists is null)
+                    return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "Cannot find address with this Id." });
+
+                return Ok(JsonSerializer.Serialize(addressExists));
             }
         }
     }
