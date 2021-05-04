@@ -1,0 +1,41 @@
+[33mcommit 9e06c6ca1e581877d30604b08f7dbf701c397fcd[m[33m ([m[1;36mHEAD -> [m[1;32mfrontend[m[33m, [m[1;31morigin/frontend[m[33m)[m
+Author: Krystian97 <krystianmateja@yahoo.pl>
+Date:   Tue Apr 27 22:13:11 2021 +0200
+
+    forntend should send request to server api
+
+[33mcommit e1ff85780e4d4932f323de808e281ef2c7bcd13a[m
+Author: Krystian97 <krystianmateja@yahoo.pl>
+Date:   Tue Apr 27 19:47:32 2021 +0200
+
+    register form validation kinda work
+
+[33mcommit 71388568a8fbc0efb8f17fd0183e6d2bab7f0385[m
+Author: Krystian97 <krystianmateja@yahoo.pl>
+Date:   Tue Apr 20 20:37:39 2021 +0200
+
+    init frontend
+
+[33mcommit dc0235558b0f9b26a31c3467bae85f9a5746af5a[m
+Author: Ciepielewski-Cezar <32453489+Ciepielewski-Cezar@users.noreply.github.com>
+Date:   Tue Apr 20 13:59:21 2021 +0200
+
+    Update README.md
+
+[33mcommit 91473b90fa1f14d06a09694e1c787677984769e7[m
+Author: Ciepielewski-Cezar <32453489+Ciepielewski-Cezar@users.noreply.github.com>
+Date:   Tue Apr 20 13:58:54 2021 +0200
+
+    Create README.md
+
+[33mcommit 16ca9f0039a86e2094662fdb595bd333e576d0e0[m
+Author: Ciepielewski-Cezar <32453489+Ciepielewski-Cezar@users.noreply.github.com>
+Date:   Tue Apr 20 13:44:41 2021 +0200
+
+    Add project files.
+
+[33mcommit f52f5c95a1b3b91c30be6a617d6fcb689b1f6466[m
+Author: Ciepielewski-Cezar <32453489+Ciepielewski-Cezar@users.noreply.github.com>
+Date:   Tue Apr 20 13:44:37 2021 +0200
+
+    Add .gitignore and .gitattributes.

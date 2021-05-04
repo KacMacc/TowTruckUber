@@ -17,7 +17,7 @@ namespace TowTruckUberAPI.Controllers
         {
 
             [HttpPost]
-            [Route("/{addressId}")]
+            [Route("{addressId}")]
             public IActionResult CreateAddress(AddressDto addressDto)
             {
                 throw new NotImplementedException();
@@ -25,7 +25,7 @@ namespace TowTruckUberAPI.Controllers
 
 
             [HttpGet]
-            [Route("/userAddress/{email}")]
+            [Route("userAddress/{email}")]
             public IActionResult GetAddressByEmail([FromRoute][Required] string email)
             {
                 throw new NotImplementedException();
@@ -33,7 +33,7 @@ namespace TowTruckUberAPI.Controllers
 
 
             [HttpGet]
-            [Route("/{addressId}")]
+            [Route("{addressId}")]
             public IActionResult GetAddressById([FromRoute][Required] int addressId)
             {
                 throw new NotImplementedException();

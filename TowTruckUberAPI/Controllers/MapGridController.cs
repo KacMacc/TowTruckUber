@@ -14,7 +14,7 @@ namespace TowTruckUberAPI.Controllers
     {
 
         [HttpPost]
-        [Route("/{mapGridId}")]
+        [Route("{mapGridId}")]
         public IActionResult CreateMapGrid([FromRoute][Required] int mapGridId, [FromBody] MapGrid mapGrid)
         {
             throw new NotImplementedException();
@@ -22,7 +22,7 @@ namespace TowTruckUberAPI.Controllers
 
 
         [HttpGet]
-        [Route("/{map_gridId}")]
+        [Route("{map_gridId}")]
         public IActionResult GetMapGridById([FromRoute][Required] int mapGridId)
         {
             throw new NotImplementedException();

@@ -10,8 +10,8 @@ using TowTruckUberAPI.Models;
 namespace TowTruckUberAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20210420172943_UserIdentity")]
-    partial class UserIdentity
+    [Migration("20210427213447_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -173,7 +173,7 @@ namespace TowTruckUberAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("MapGridId")
+                    b.Property<int?>("MapGridId")
                         .HasColumnType("int");
 
                     b.Property<string>("Street")
@@ -311,7 +311,6 @@ namespace TowTruckUberAPI.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
@@ -343,7 +342,6 @@ namespace TowTruckUberAPI.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("PhoneNumberConfirmed")
@@ -431,9 +429,7 @@ namespace TowTruckUberAPI.Migrations
                 {
                     b.HasOne("TowTruckUberAPI.Models.MapGrid", "MapGrid")
                         .WithMany("Addresses")
-                        .HasForeignKey("MapGridId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("MapGridId");
 
                     b.Navigation("MapGrid");
                 });
