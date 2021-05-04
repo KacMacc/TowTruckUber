@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.AspNetCore.DataProtection;
+using TowTruckUberAPI.Infrastructure;
 using TowTruckUberAPI.Infrastructure.Database;
 
 namespace TowTruckUberAPI
@@ -39,45 +42,15 @@ namespace TowTruckUberAPI
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
 
+            services.AddDataProtection()
+                // This helps surviving a restart: a same app will find back its keys. Just ensure to create the folder.
+                .PersistKeysToFileSystem(new DirectoryInfo("\\MyFolder\\keys\\"))
+                // This helps surviving a site update: each app has its own store, building the site creates a new app
+                .SetApplicationName("MyWebsite")
+                .SetDefaultKeyLifetime(TimeSpan.FromDays(90));
+
             // CORS
             services.AddCors(options => options.AddDefaultPolicy(builder => builder.AllowAnyOrigin()));
-
-            // Adding Authentication  
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-
-            // Adding Jwt Bearer  
-            .AddJwtBearer(options =>
-            {
-                options.SaveToken = true;
-                options.RequireHttpsMetadata = false;
-                options.TokenValidationParameters = new TokenValidationParameters()
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidAudience = Configuration["JWT:ValidAudience"],
-                    ValidIssuer = Configuration["JWT:ValidIssuer"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:Secret"]))
-                };
-            });
-
-            //services.AddCors(options =>
-            //{
-            //    options.AddPolicy(name: MyAllowSpecificOrigins,
-            //        builder =>
-            //        {
-            //            builder.WithOrigins("https://localhost:5001",
-            //                "https://localhost:5000");
-            //        });
-            //});
-
-            
-
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -96,10 +69,15 @@ namespace TowTruckUberAPI
             {
                 app.UseExceptionHandler("/error");
             }
+            //dodane
+            app.UseStaticFiles();
+
 
             app.UseHttpsRedirection();
-
+            app.UseAuthentication();
             app.UseRouting();
+            app.UseAuthorization();
+            
 
             app.UseCors(builder =>
                 builder
@@ -107,9 +85,8 @@ namespace TowTruckUberAPI
                     .AllowAnyHeader()
                     .AllowAnyMethod());
 
-            app.UseAuthorization();
-            //app.UseAuthentication();
-            //app.UsweMvc();
+            
+            //app.UseMvc();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

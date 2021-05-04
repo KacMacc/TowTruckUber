@@ -17,6 +17,7 @@ using TowTruckUberAPI.Models.Dtos;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.EntityFrameworkCore;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace TowTruckUberAPI.Controllers
@@ -27,19 +28,32 @@ namespace TowTruckUberAPI.Controllers
     public class UserController : ControllerBase
     {
         private readonly UserManager<User> _userManager;
-        private readonly IConfiguration _configuration;
+        private readonly SignInManager<User> _signInManager;
 
-        public UserController(UserManager<User> userManager, IConfiguration configuration)
+        public UserController(UserManager<User> userManager, SignInManager<User> signInManager)
         {
-            this._userManager = userManager;
-            _configuration = configuration;
+            _userManager = userManager;
+            _signInManager = signInManager;
         }
 
-
-        [AllowAnonymous]
         [HttpGet]
         [Route("login")]
         public string Login()
+        {
+            MapGrid mapGrid = new MapGrid()
+            {
+                Id = 3,
+                Latitude = "3535.353",
+                Longitude = "-493.434"
+            };
+
+            return JsonSerializer.Serialize(mapGrid); ;
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("register")]
+        public string Register()
         {
             MapGrid mapGrid = new MapGrid()
             {
@@ -57,42 +71,29 @@ namespace TowTruckUberAPI.Controllers
         [Route("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
         {
-            var user = await _userManager.FindByNameAsync(loginDto.Email);
-            if (user != null && await _userManager.CheckPasswordAsync(user, loginDto.Password))
+            var user = await _userManager.FindByEmailAsync(loginDto.Email);
+
+            if (user is not null)
             {
-                var userRoles = await _userManager.GetRolesAsync(user);
+                await _signInManager.SignOutAsync();
+                var result = await _signInManager.PasswordSignInAsync(user, loginDto.Password, false, false);
 
-                var authClaims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Email, user.Email),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                };
+                if (!result.Succeeded)
+                    return Unauthorized(new Response { Status = "Error", Message = "Wrong password or/and email." });
 
-                foreach (var userRole in userRoles)
-                {
-                    authClaims.Add(new Claim(ClaimTypes.Role, userRole));
-                }
-
-                var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
-
-                var token = new JwtSecurityToken(
-                    issuer: _configuration["JWT:ValidIssuer"],
-                    audience: _configuration["JWT:ValidAudience"],
-                    expires: DateTime.Now.AddHours(3),
-                    claims: authClaims,
-                    signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
-                    );
-
-                return Ok(new
-                {
-                    token = new JwtSecurityTokenHandler().WriteToken(token),
-                    expiration = token.ValidTo
-                });
+                return Ok(new Response { Status = "Success", Message = "User login successfully." });
             }
 
-            return Unauthorized();
+            return Unauthorized(new Response { Status = "Error", Message = "Wrong password or/and email." });
         }
 
+        [HttpPost]
+        [Route("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return Ok(new Response {Status = "Success", Message = "User logout successfully."});
+        }
 
         [AllowAnonymous]
         [HttpPost]
@@ -120,11 +121,11 @@ namespace TowTruckUberAPI.Controllers
 
             foreach(var error in result.Errors)
             {
-                registerErrors += $"{error.Code}. {error.Description} \n";
+                registerErrors += $"{error.Description} \n";
             }
 
-
-            return !result.Succeeded ? StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = registerErrors })
+            var x = new Response {Status = "Error", Message = registerErrors};
+            return !result.Succeeded ? StatusCode(StatusCodes.Status500InternalServerError, JsonSerializer.Serialize(x))
                 : Ok(new Response { Status = "Success", Message = "User created successfully!" });
         }
 
