@@ -102,7 +102,7 @@ namespace TowTruckUberAPI.Controllers
             var userExists = await _userManager.FindByNameAsync(registerDto.Email);
 
             if (userExists is not null)
-                return StatusCode(StatusCodes.Status411LengthRequired, new Response { Status = "Error", Message = "User with this e-mail already exists!" });
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User with this e-mail already exists!" });
 
             User user = new User()
             {
@@ -120,7 +120,7 @@ namespace TowTruckUberAPI.Controllers
 
             foreach(var error in result.Errors)
             {
-                registerErrors += error.Code + " " + error.Description + "\n";
+                registerErrors += $"{error.Code}. {error.Description} \n";
             }
 
 
