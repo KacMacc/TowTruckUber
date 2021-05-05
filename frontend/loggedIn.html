@@ -98,13 +98,10 @@
 
     <script>
         function logoutFunction() {
-            sessionStorage.clear();
-            window.location.replace('index.html');
+            logOut("https://localhost:5001/user/logout").then(data => handleLogOut(data));
         };
         window.onload = function() {
-            if (sessionStorage.getItem('status') == null){
-                    window.location.replace('index.html');
-                }
+            checkLoggedIn("https://localhost:5001/user/login").then(data => handleCheckLoggedInAnswer(data))
         };
         // Example starter JavaScript for disabling form submissions if there are invalid fields
 
@@ -145,6 +142,39 @@
 
         return response.json();
         }*/
+
+        async function logOut(url = '', data = {}) {
+        // Default options are marked with *
+        const response = await fetch(url,
+        {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+              // 'Content-Type': 'application/x-www-form-urlencoded',
+            }
+        });
+
+        return response.json();
+        }
+
+        async function checkLoggedIn(url = '') {
+            // Default options are marked with *
+            const response = await fetch(url);
+            return response;
+        }
+
+        function handleCheckLoggedInAnswer(data){
+            if(data.status == 200)
+            {}
+            else
+            //window.location.replace('index.html');
+                console.log(data);
+        }
+
+        function handleLogOut(data){
+            if(data.status == 200)
+            {}
+        }
     </script>
 </body>
 </html>

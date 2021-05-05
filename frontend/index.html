@@ -126,16 +126,12 @@
     <script>
         function handleServerAnswer(data) {
             console.log(data);
-            switch(data.title)
+            switch(data.status)
             {
                 case "Success":
-                    jQuery(window).load(function() {
-                    sessionStorage.setItem('status','loggedIn') 
-                    });
                     window.location.replace('loggedIn.html');
                     break;
                 case "Unauthorized":
-                    sessionStorage.setItem('status','loggedIn') 
                     document.getElementById("error-message").innerHTML = "Wrong email or password!";
                     break;
                 default:
