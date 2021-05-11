@@ -3,14 +3,13 @@ Aplikacja webowa "Uber dla laweciarzy" na zajęcia z ISI.
 
 ## Technologia
  * Backend - ASP.NET Core 5
- * Frontend - Nieustalone
-
+ * Frontend - JQuery, Bootsrap
 ## Zewnętrzne API
 * Google API (Maps, Gmail)
 * PayPal
 
 ## Gotowa funkcjonalność
-- [ ] Autoryzacja i autentykacja użytkowników za pomocą tokenów
+- [x] Autoryzacja i autentykacja użytkowników
 - [ ] Zaznaczenie punktu końcowego transportu (punkt początkowy to zawsze siedziba firmy)
 - [ ] Wyliczenie długości drogi
 - [ ] Wyliczenie kosztów transportu
