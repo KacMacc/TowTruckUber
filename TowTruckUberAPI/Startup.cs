@@ -76,7 +76,7 @@ namespace TowTruckUberAPI
             app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseRouting();
-            app.UseAuthorization();
+            
             
 
             app.UseCors(builder =>
@@ -85,7 +85,7 @@ namespace TowTruckUberAPI
                     .AllowAnyHeader()
                     .AllowAnyMethod());
 
-            
+            app.UseAuthorization();
             //app.UseMvc();
             app.UseEndpoints(endpoints =>
             {
