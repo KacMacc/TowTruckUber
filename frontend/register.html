@@ -67,6 +67,9 @@
                               
                                     <!-- Register Form -->
                                     <form class="my-3" id = "myForm">
+                                        <div class="row">
+                                            <div id="error-message" class="text-danger col-12"></div>
+                                        </div>
                                         <div class=" form-row">
                                             <input class = "col-6 offset-3 my-2 text-center" type="text" id="name" name="register" placeholder="Name" required>
                                         </div>
@@ -97,7 +100,7 @@
                                     </form>
 
                                 </div>
-                              </div>
+                            </div>
                         </div>
                 </div>
             </div>
@@ -124,50 +127,83 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
 
+    <script id="successHtmlBlock" type="text/html">
+        <div class = "row">
+            <div class="col-md-12 content p-3 my-3 wrapper fadeInDown">
+                <div class = "whiteBackground py-3">
+                    <div class = "row text-center">
+                        <div class = "col-12 py-3">Registration successful!
+                        </div>
+                    </div>
+                    <div class = "row">
+                        <div class = "col-12 py-3">
+                            <a href = "index.html"><input type = "button" value="Go to login page"></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </script>
+
     <script>
         //Custom form validation function for "register"
         function validateRegister(){
             var ErrorMessage, Login, Password1, Password2, Error=false;
-            var format = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
 
             //load values from form to variables
             Password1=document.getElementById("password").value;
             Password2=document.getElementById("password2").value;
         
-        //check if password meets the requirements
-        if(Password1.length<5 || format.test(Password1))
-        {
-            document.getElementById("password1-error-message").innerHTML = "Password must be at least 5 characters, can't include space, special characters or emotes";
-            Error=true;
-        }
-        else
-        {
-            document.getElementById("password1-error-message").innerHTML = "";
-            Error=false;
-        }
-        //check if both passwords aren't the same
-        if (!Error)
-        {
-            if(Password2!=Password1){
-                document.getElementById("password2-error-message").innerHTML = "Passwords don't match!";
+            //check if password meets the requirements
+            if(Password1.length<6)
+            {
+                document.getElementById("password1-error-message").innerHTML = "Password must be at least 6 characters";
                 Error=true;
             }
             else
             {
-                document.getElementById("password2-error-message").innerHTML = "";
+                document.getElementById("password1-error-message").innerHTML = "";
                 Error=false;
             }
+            //check if both passwords aren't the same
+            if (!Error)
+            {
+                if(Password2!=Password1){
+                    document.getElementById("password2-error-message").innerHTML = "Passwords don't match!";
+                    Error=true;
+                }
+                else
+                {
+                    document.getElementById("password2-error-message").innerHTML = "";
+                    Error=false;
+                }
+            }
+            //in case some input isn't correct - don't let form submit
+            if(Error)
+            {
+                return true;
+            }
+            else //everything is correct
+            {
+                return false;
+            }
+
         }
-        //in case some input isn't correct - don't let form submit
-        if(Error)
-        {
-            return true;
-        }
-        else //everything is correct
-        {
-            return false;
-        }
-        
+
+        function handleServerAnswer(data) {
+            console.log(data);
+            switch(data.status)
+            {
+                case "Success":
+                    document.getElementById("mainbox").innerHTML = document.getElementById('successHtmlBlock').innerHTML;
+                    break;
+                case "Error":
+                    document.getElementById("error-message").innerHTML = data.message;
+                    break;
+                default:
+                    document.getElementById("error-message").innerHTML = "Something is no yes!";
+                    console.log("Server returned wrong code!");
+            }
         }
         
 
@@ -203,7 +239,7 @@
                                 password: password,
                                 phoneNumber: phone
                             }
-                        ).then(data => console.log(data));
+                        ).then(data => handleServerAnswer(data));
                         event.preventDefault();
                         event.stopPropagation();
                     }
@@ -221,9 +257,9 @@
             },
             body: JSON.stringify(data) // body data type must match "Content-Type" header
         })
-        .catch((error) => {
-            console.error('Error:', error);
-        });
+        //.catch((error) => {
+        //    console.error('Error:', error);
+        //});
         return response.json(); // parses JSON response into native JavaScript objects
         }
 

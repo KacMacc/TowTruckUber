@@ -121,7 +121,7 @@ namespace TowTruckUberAPI.Controllers
 
             foreach(var error in result.Errors)
             {
-                registerErrors += $"{error.Description} \n";
+                registerErrors += $"{error.Description}<br>";
             }
 
             var x = new Response {Status = "Error", Message = registerErrors};
