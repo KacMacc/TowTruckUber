@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.Extensions.Logging;
+using TowTruckUberAPI.Infrastructure;
 using TowTruckUberAPI.Infrastructure.Database;
 
 namespace TowTruckUberAPI
@@ -39,43 +43,24 @@ namespace TowTruckUberAPI
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
 
+            services.AddDataProtection()
+                // This helps surviving a restart: a same app will find back its keys. Just ensure to create the folder.
+                .PersistKeysToFileSystem(new DirectoryInfo("\\MyFolder\\keys\\"))
+                // This helps surviving a site update: each app has its own store, building the site creates a new app
+                .SetApplicationName("MyWebsite")
+                .SetDefaultKeyLifetime(TimeSpan.FromDays(90));
+
             // CORS
             services.AddCors(options => options.AddDefaultPolicy(builder => builder.AllowAnyOrigin()));
 
-            // Adding Authentication  
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
 
-            // Adding Jwt Bearer  
-            .AddJwtBearer(options =>
+            services.ConfigureApplicationCookie(options =>
             {
-                options.SaveToken = true;
-                options.RequireHttpsMetadata = false;
-                options.TokenValidationParameters = new TokenValidationParameters()
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidAudience = Configuration["JWT:ValidAudience"],
-                    ValidIssuer = Configuration["JWT:ValidIssuer"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:Secret"]))
-                };
+                // Cookie settings
+                options.Cookie.HttpOnly = true;
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+                options.SlidingExpiration = true;
             });
-
-            //services.AddCors(options =>
-            //{
-            //    options.AddPolicy(name: MyAllowSpecificOrigins,
-            //        builder =>
-            //        {
-            //            builder.WithOrigins("https://localhost:5001",
-            //                "https://localhost:5000");
-            //        });
-            //});
-
-            
 
 
         }
@@ -96,26 +81,55 @@ namespace TowTruckUberAPI
             {
                 app.UseExceptionHandler("/error");
             }
+            //dodane
 
-            app.UseHttpsRedirection();
 
-            app.UseRouting();
 
+            //app.UseHttpsRedirection();
+            //app.UseAuthentication();
+            //app.UseStaticFiles();
+            //app.UseRouting();
+
+            //app.UseCors(builder =>
+            //    builder
+            //        .AllowAnyOrigin()
+            //        .AllowAnyHeader()
+            //        .AllowAnyMethod());
+
+            //app.UseAuthorization();
+
+            //app.UseEndpoints(endpoints =>
+            //{
+            //    endpoints.MapControllers();
+            //});
+
+            app.UseAuthentication();
+            app.UseStaticFiles();
             app.UseCors(builder =>
                 builder
                     .AllowAnyOrigin()
                     .AllowAnyHeader()
                     .AllowAnyMethod());
+            app.UseHttpsRedirection();
+            app.UseRouting();
+
+
+
+
 
             app.UseAuthorization();
-            //app.UseAuthentication();
-            //app.UsweMvc();
+
+
+
+            //app.UseMvc();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
 
-            
         }
+
+
     }
 }
+

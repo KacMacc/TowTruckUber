@@ -17,5 +17,10 @@ namespace TowTruckUberAPI.Models
 
         public MapGrid MapGrid { get; set; }
 
+        public string ToStringForEmail()
+        {
+            return $"{nameof(Country)}: {Country}, {nameof(City)}: {City}, {nameof(ZipCode)}: {ZipCode}\n" +
+            $"{nameof(Street)}: {Street}, {nameof(HouseNum)}: {HouseNum} {nameof(FlatNum)}: {FlatNum}";
+        }
     }
 }
