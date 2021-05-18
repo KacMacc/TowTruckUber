@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using TowTruckUberAPI.Models;
 using TowTruckUberAPI.Models.Dtos;
+using Microsoft.AspNetCore.Identity;
 
 namespace TowTruckUberAPI.Controllers
 {
@@ -18,9 +19,11 @@ namespace TowTruckUberAPI.Controllers
     public class PaymentController : ControllerBase
     {
         private readonly AppDbContext _dbContext;
+        private readonly UserManager<User> _userManager;
 
-        public PaymentController(AppDbContext dbContext)
+        public PaymentController(AppDbContext dbContext, UserManager<User> userManager)
         {
+            _userManager = userManager;
             _dbContext = dbContext;
         }
 
@@ -44,6 +47,30 @@ namespace TowTruckUberAPI.Controllers
                     new Response { Status = "Error", Message = "Cannot find payment with this Id." });
 
             return Ok(JsonSerializer.Serialize(paymentExists));
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("payment")]
+        public async Task<IActionResult> AddPayment([FromBody] PaymentDto paymentDto)
+        {
+            var user = await _userManager.FindByNameAsync(paymentDto.PayerId);
+
+            Payment payment = new Payment()
+            {
+                Id = paymentDto.Id,
+                Name = paymentDto.Name ?? "nejm",
+                StartDate = paymentDto.StartDate ?? "dejt",
+                Payer = user,
+                Plan = 1,
+                Description = paymentDto.Description ?? "dawda",
+                State = StateEnum.Active,
+            };
+
+            var result = _dbContext.Payments.Add(payment);
+            _dbContext.SaveChanges();
+
+            return Ok(new Response { Status = "Success", Message = "Payment added to database" });
         }
     }
 }

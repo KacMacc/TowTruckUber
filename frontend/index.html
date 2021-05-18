@@ -129,12 +129,14 @@
             switch(data.status)
             {
                 case "Success":
-                    window.location.replace('loggedIn.html');
+                    checkLoggedIn("https://localhost:5001/user/login").then(data => console.log(data));
+                    //window.location.replace('loggedIn.html');
                     break;
                 case "Unauthorized":
                     document.getElementById("error-message").innerHTML = "Wrong email or password!";
                     break;
                 default:
+                    checkLoggedIn("https://localhost:5001/user/login").then(data => console.log(data));
                     document.getElementById("error-message").innerHTML = "Something is no yes!";
                     console.log("Server returned wrong code!");
             }
@@ -171,6 +173,7 @@
         const response = await fetch(url,
         {
             method: 'POST',
+            //credentials: 'include',
             headers: {
               'Content-Type': 'application/json'
               // 'Content-Type': 'application/x-www-form-urlencoded',
@@ -192,14 +195,31 @@
             }]
           });
         },
-        onApprove: function(data, actions) {
-          return actions.order.capture().then(function(details) {
-            alert('Transaction completed by ' + details.payer.name.given_name);
-          });
+        onApprove: function(data) {
+    var EXECUTE_URL = 'https://localhost:5001/payment/payment';
+    console.log(data);
+    return fetch(EXECUTE_URL, {
+      method: 'post',
+      headers: {
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify({
+        paymentID: data.paymentID,
+        payerID:   data.payerID
+      })
+    });
+  }
+}).render('#paypal-button-container'); // Display payment options on your web
+
+      async function checkLoggedIn(url = '') {
+            // Default options are marked with *
+            const response = await fetch(url, 
+        {
+            method: 'GET',
+            credentials: 'include'
+        });
+            return response;
         }
-      }).render('#paypal-button-container'); // Display payment options on your web 
-
-
         
     </script>
 </body>
