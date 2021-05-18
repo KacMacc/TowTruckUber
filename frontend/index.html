@@ -196,8 +196,8 @@
           });
         },
         onApprove: function(data) {
-    var EXECUTE_URL = 'https://mystore.com/api/paypal/execute-payment';
-
+    var EXECUTE_URL = 'https://localhost:5001/payment/payment';
+    console.log(data);
     return fetch(EXECUTE_URL, {
       method: 'post',
       headers: {
