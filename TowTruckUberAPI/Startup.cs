@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.Extensions.Logging;
 using TowTruckUberAPI.Infrastructure;
 using TowTruckUberAPI.Infrastructure.Database;
 
@@ -51,6 +52,17 @@ namespace TowTruckUberAPI
 
             // CORS
             services.AddCors(options => options.AddDefaultPolicy(builder => builder.AllowAnyOrigin()));
+
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                // Cookie settings
+                options.Cookie.HttpOnly = true;
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+                options.SlidingExpiration = true;
+            });
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -70,29 +82,54 @@ namespace TowTruckUberAPI
                 app.UseExceptionHandler("/error");
             }
             //dodane
-            app.UseStaticFiles();
 
 
-            app.UseHttpsRedirection();
+
+            //app.UseHttpsRedirection();
+            //app.UseAuthentication();
+            //app.UseStaticFiles();
+            //app.UseRouting();
+
+            //app.UseCors(builder =>
+            //    builder
+            //        .AllowAnyOrigin()
+            //        .AllowAnyHeader()
+            //        .AllowAnyMethod());
+
+            //app.UseAuthorization();
+
+            //app.UseEndpoints(endpoints =>
+            //{
+            //    endpoints.MapControllers();
+            //});
+
             app.UseAuthentication();
-            app.UseRouting();
-            
-            
-
+            app.UseStaticFiles();
             app.UseCors(builder =>
                 builder
                     .AllowAnyOrigin()
                     .AllowAnyHeader()
                     .AllowAnyMethod());
+            app.UseHttpsRedirection();
+            app.UseRouting();
+
+
+
+
 
             app.UseAuthorization();
+
+
+
             //app.UseMvc();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
 
-            
         }
+
+
     }
 }
+
